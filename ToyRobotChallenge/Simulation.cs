@@ -15,6 +15,10 @@ namespace ToyRobotChallenge
             this.entity = new Robot();
         }
 
+        /// <summary>
+        /// Executes all files found in instructions.txt and outputs the reponse
+        /// </summary>
+        /// <returns></returns>
         public string Run()
         {
             var response = string.Empty;
