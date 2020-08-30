@@ -7,7 +7,7 @@ namespace ToyRobotChallenge
     {
         string Left();
         string Move();
-        string Place(int? x = null, int? y = null);
+        string Place(int? x = null, int? y = null, CardinalDirection direction = CardinalDirection.North);
         string Report();
         string Right();
     }
@@ -57,7 +57,7 @@ namespace ToyRobotChallenge
         /// <summary>
         /// Place the robot on the tabletop
         /// </summary>
-        public string Place(int? x, int? y)
+        public string Place(int? x, int? y, CardinalDirection direction)
         {
             if (x < 0 || x > Tabletop.SizeX
                 || y < 0 || y > Tabletop.SizeY)
@@ -66,9 +66,11 @@ namespace ToyRobotChallenge
             PositionX = x ?? 0;
             PositionY = y ?? 0;
 
+            Direction = direction;
+
             HasBeenPlaced = true;
 
-            return $"Placed at {PositionX},{PositionY}";
+            return $"Placed at {PositionX},{PositionY},{Direction}";
         }
 
         /// <summary>
@@ -80,9 +82,9 @@ namespace ToyRobotChallenge
                 return NotPlacedText;
 
             if (Direction == CardinalDirection.North)
-                PositionY = Math.Min(5, PositionY + 1);
+                PositionY = Math.Min(Tabletop.SizeY, PositionY + 1);
             else if (Direction == CardinalDirection.East)
-                PositionX = Math.Min(5, PositionX + 1);
+                PositionX = Math.Min(Tabletop.SizeX, PositionX + 1);
             else if (Direction == CardinalDirection.South)
                 PositionY = Math.Max(0, PositionY - 1);
             else if (Direction == CardinalDirection.West)
@@ -124,14 +126,14 @@ namespace ToyRobotChallenge
             if (!HasBeenPlaced)
                 return NotPlacedText;
 
-            return $"{Direction}\n" +
-                $"X:{PositionX}\n" +
-                $"Y:{PositionY}";
+            return $"Facing: {Direction}\n" +
+                $"X: {PositionX}\n" +
+                $"Y: {PositionY}";
         }
 
     }
 
-    enum CardinalDirection
+    public enum CardinalDirection
     {
         North,
         East,

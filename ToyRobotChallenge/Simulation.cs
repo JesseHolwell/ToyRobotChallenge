@@ -24,13 +24,13 @@ namespace ToyRobotChallenge
             var response = string.Empty;
 
             var logFile = File.ReadAllLines(instructionsFile);
-            var logList = new List<string>(logFile);
 
             var commands = new CommandParser(entity);
 
             foreach (var v in logFile)
             {
-                response += $"{v}\n{commands.Execute(v)}\n";
+                if (!string.IsNullOrEmpty(v))
+                    response += $"{v}\n{commands.Execute(v)}\n";
             }
 
             return response;

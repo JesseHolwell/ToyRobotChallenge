@@ -8,7 +8,7 @@ namespace ToyRobotChallenge
         {
             Console.WriteLine("Toy Robot Challenge - Jesse Holwell");
             Console.WriteLine("Enter a command to run interactively,\n" +
-                "'simulation' to run preprogrammed steps,\n" +
+                "'sim' to run preprogrammed steps,\n" +
                 "'help' for command info,\n" +
                 "'exit' to quit >\n");
 
@@ -59,7 +59,7 @@ namespace ToyRobotChallenge
             $"Commands are case insensitive\n" +
             $"Board size is {Tabletop.SizeX} x {Tabletop.SizeY}\n" +
             $"Available commands:\n" +
-            $"PLACE(x,y)\n" +
+            $"PLACE x,y,direction)\n" +
             string.Join("\n", typeof(Commands).GetAllPublicConstantValues<string>());
 
 

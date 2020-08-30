@@ -13,6 +13,8 @@ namespace ToyRobotChallenge
             this.entity = entity;
         }
 
+        private string CommandNotValid = "Not a valid command";
+
         /// <summary>
         /// Check that the given command is valid, and if so executes it
         /// </summary>
@@ -21,7 +23,7 @@ namespace ToyRobotChallenge
         public string Execute(string command)
         {
             if (!IsValidCommand(command))
-                return "Not a valid command";
+                return CommandNotValid;
 
             if (command.Equals(Commands.Move, StringComparison.CurrentCultureIgnoreCase))
                 return entity.Move();
@@ -35,12 +37,14 @@ namespace ToyRobotChallenge
                 return entity.Place();
             else if (IsValidPlaceCommand(command))
             {
-                var start = command.IndexOf("(");
-                var end = command.IndexOf(")");
+                var parts = command.Split(' ').Last().Split(',');
+                var directionPart = parts[2];
+                CardinalDirection direction;
 
-                var numbers = command.Substring(start +1, end - start-1);
-                var numberParts = numbers.Split(',').ToArray();
-                return entity.Place(int.Parse(numberParts[0]), int.Parse(numberParts[1]));
+                if (Enum.TryParse(directionPart, true, out direction))
+                    return entity.Place(int.Parse(parts[0]), int.Parse(parts[1]), direction);
+                else
+                    return CommandNotValid;
             }
             else
                 throw new ArgumentException($"Command '{command}' is valid but could not be matched to an entity action");
@@ -60,22 +64,7 @@ namespace ToyRobotChallenge
         /// </summary>
         private bool IsValidPlaceCommand(string command)
         {
-            //is match
-            //PLACE(0, 0)
-            //PLACE(1234, 1234)
-            //place(1, 2)
-
-            //not match
-            //PLACE(x, y)
-            //PLACE()
-            //PLACE(0, i)
-            //PLACE(i, 0)
-            //PLACE(-1,-1)
-            //PLACE
-            //1234PLACE(0, 0)
-            //abcdplace(12, 12)
-
-            var regex = new Regex(@"(?i)(\bplace\b)[(]\d+,\d+[)]");
+            var regex = new Regex(@"(?i)(\bplace\b)[\s]\d+,\d+,*\w*");
             return regex.IsMatch(command);
         }
     }
