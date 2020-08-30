@@ -70,6 +70,7 @@ namespace ToyRobotChallenge
             //PLACE()
             //PLACE(0, i)
             //PLACE(i, 0)
+            //PLACE(-1,-1)
             //PLACE
             //1234PLACE(0, 0)
             //abcdplace(12, 12)

@@ -124,7 +124,7 @@ namespace ToyRobotChallenge
             if (!HasBeenPlaced)
                 return NotPlacedText;
 
-            return $"\n{Direction}\n" +
+            return $"{Direction}\n" +
                 $"X:{PositionX}\n" +
                 $"Y:{PositionY}";
         }

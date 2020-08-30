@@ -7,7 +7,10 @@ namespace ToyRobotChallenge
         static void Main(string[] args)
         {
             Console.WriteLine("Toy Robot Challenge - Jesse Holwell");
-            Console.WriteLine("Enter a command, 'help' or 'exit' >");
+            Console.WriteLine("Enter a command to run interactively,\n" +
+                "'simulation' to run preprogrammed steps,\n" +
+                "'help' for command info,\n" +
+                "'exit' to quit >\n");
 
             string command = string.Empty;
 
@@ -15,6 +18,7 @@ namespace ToyRobotChallenge
             {
                 IBoardEntity entity = new Robot();
                 var commands = new CommandParser(entity);
+                var sim = new Simulation();
 
                 while (!IsExitCommand(command))
                 {
@@ -22,6 +26,8 @@ namespace ToyRobotChallenge
 
                     if (IsHelpCommand(command))
                         Console.WriteLine(HelpText);
+                    else if (IsSimulationCommand(command))
+                        Console.WriteLine(sim.Run());
                     else
                         Console.WriteLine(commands.Execute(command));
                 }
@@ -42,6 +48,11 @@ namespace ToyRobotChallenge
         private static bool IsHelpCommand(string command)
         {
             return command.ToUpper().Equals("help", StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        private static bool IsSimulationCommand(string command)
+        {
+            return command.ToUpper().Equals("simulation", StringComparison.CurrentCultureIgnoreCase);
         }
 
         private static string HelpText =
