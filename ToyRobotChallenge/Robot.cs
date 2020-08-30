@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace ToyRobotChallenge
 {
-
-    interface IBoardEntity
+    public interface IBoardEntity
     {
         string Left();
         string Move();
@@ -16,33 +14,54 @@ namespace ToyRobotChallenge
 
     class Robot : IBoardEntity
     {
+        private const string NotPlacedText = "Robot hasnt been placed";
+        private const string OutOfBoundsText = "Cannot place robot out of bounds";
+
         /// <summary>
         /// The direciton the robot is currently facing
         /// </summary>
-        private CardinalDirection Direction { get; set; }
+        private CardinalDirection _direction { get; set; }
+        private CardinalDirection Direction
+        {
+            get
+            {
+                return _direction;
+            }
+            set
+            {
+                //a circular loop to enable --/++ operations;
+                if ((int)value < Enum.GetValues(typeof(CardinalDirection)).Cast<int>().Min())
+                    _direction = Enum.GetValues(typeof(CardinalDirection)).Cast<CardinalDirection>().Max();
+                else if ((int)value > Enum.GetValues(typeof(CardinalDirection)).Cast<int>().Max())
+                    _direction = Enum.GetValues(typeof(CardinalDirection)).Cast<CardinalDirection>().Min();
+                else
+                    _direction = value;
+            }
+        }
 
         /// <summary>
-        /// Current position on the tabletop
+        /// The robots current position on the X axis
         /// </summary>
-        private Tuple<int, int> Position { get; set; }
-
         private int PositionX { get; set; }
 
+        /// <summary>
+        /// The robots current position on the Y axis
+        /// </summary>
         private int PositionY { get; set; }
 
+        /// <summary>
+        /// Returns true if the robot has been placed on the tabletop
+        /// </summary>
         private bool HasBeenPlaced { get; set; }
 
         /// <summary>
         /// Place the robot on the tabletop
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns>returns true if place was successful</returns>
         public string Place(int? x, int? y)
         {
-            if (x < 0 || x > 5
-                || y < 0 || y > 5)
-                return "Cannot place robot out of bounds";
+            if (x < 0 || x > Tabletop.SizeX
+                || y < 0 || y > Tabletop.SizeY)
+                return OutOfBoundsText;
 
             PositionX = x ?? 0;
             PositionY = y ?? 0;
@@ -55,11 +74,10 @@ namespace ToyRobotChallenge
         /// <summary>
         /// Move the robot one step in the direction its facing
         /// </summary>
-        /// <returns>returns true if movement was successful</returns>
         public string Move()
         {
             if (!HasBeenPlaced)
-                return "Robot hasnt been placed";
+                return NotPlacedText;
 
             if (Direction == CardinalDirection.North)
                 PositionY = Math.Min(5, PositionY + 1);
@@ -70,23 +88,42 @@ namespace ToyRobotChallenge
             else if (Direction == CardinalDirection.West)
                 PositionX = Math.Max(0, PositionX - 1);
 
-            return $"Moved forwards:{PositionX},{PositionY}";
+            return $"Moved forwards: {PositionX},{PositionY}";
         }
 
+        /// <summary>
+        /// Rotate the robot to the left
+        /// </summary>
         public string Left()
         {
+            if (!HasBeenPlaced)
+                return NotPlacedText;
+
             Direction--;
-            return "Rotated to the LEFT";
+            return $"Rotated left: {this.Direction}";
         }
 
+        /// <summary>
+        /// Rotate the robot to the right
+        /// </summary>
         public string Right()
         {
+            if (!HasBeenPlaced)
+                return NotPlacedText;
+
             Direction++;
-            return "Rotated to the RIGHT";
+            return $"Rotated right: {this.Direction}";
         }
 
+        /// <summary>
+        /// Report the robots current position on the tabletop
+        /// </summary>
+        /// <returns></returns>
         public string Report()
         {
+            if (!HasBeenPlaced)
+                return NotPlacedText;
+
             return $"\n{Direction}\n" +
                 $"X:{PositionX}\n" +
                 $"Y:{PositionY}";
