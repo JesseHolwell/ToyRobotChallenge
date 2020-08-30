@@ -64,7 +64,7 @@ namespace ToyRobotChallenge
         /// </summary>
         private bool IsValidPlaceCommand(string command)
         {
-            var regex = new Regex(@"(?i)(\bplace\b)[\s]\d+,\d+,*\w*");
+            var regex = new Regex(@"(?i)(\bplace\b)[\s]\d+,\d+,\w+");
             return regex.IsMatch(command);
         }
     }
